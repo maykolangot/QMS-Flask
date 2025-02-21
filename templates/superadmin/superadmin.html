@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Superadmin - Dashboard</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+    <div class="container">
+        <h3>Users List</h3>
+
+        <a href="{{ url_for('users.create_user') }}" class="btn btn-success">Add User</a>
+        <br><br>
+
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Role</th>
+                    <th>Username</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for user in users %}
+                <tr>
+                    <td>{{ user.name }}</td>
+                    <td>{{ user.role }}</td>
+                    <td>{{ user.username }}</td>
+                    <td>
+                        <a href="{{ url_for('users.update_user', username=user.username) }}" class="btn btn-primary btn-sm">Edit</a>
+                        <form action="{{ url_for('users.delete_user', username=user.username) }}" method="POST" style="display:inline;">
+                            <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure?');">Delete</button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <br>
+        <form action="{{ url_for('logout') }}" method="POST">
+            <button type="submit" class="btn btn-danger">Logout</button>
+        </form>
+    </div>
+</body>
+</html>

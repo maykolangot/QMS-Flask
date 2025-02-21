@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Superadmin Dashboard</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+      rel="stylesheet" />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css"
+      rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <style>
+      body {
+        display: flex;
+        height: 100vh;
+        background-color: #343a40;
+        color: white;
+      }
+      .sidebar {
+        width: 250px;
+        background: #212529;
+        padding: 1rem;
+        position: fixed;
+        height: 100vh;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        transition: transform 0.3s ease-in-out, width 0.3s ease-in-out;
+        overflow: hidden;
+        transform: translateX(0);
+      }
+      .sidebar.collapsed {
+        width: 80px;
+      }
+      .sidebar .nav-link {
+        color: white;
+        padding: 10px;
+        display: flex;
+        align-items: center;
+        transition: background 0.3s, color 0.3s;
+        white-space: nowrap;
+        cursor: pointer;
+      }
+      .sidebar .nav-link:hover,
+      .nav-link.active {
+        background: #495057;
+        border-radius: 5px;
+      }
+      .sidebar .nav-link i {
+        margin-right: 10px;
+      }
+      .sidebar.collapsed .nav-link span {
+        display: none;
+      }
+      .content {
+        margin-left: 250px;
+        flex-grow: 1;
+        padding: 2rem;
+        transition: margin-left 0.3s ease-in-out;
+        background: white;
+        border-radius: 10px;
+        color: black;
+      }
+      .sidebar.collapsed + .content {
+        margin-left: 80px;
+      }
+      .toggle-btn {
+        position: fixed;
+        top: 15px;
+        left: 15px;
+        background: #212529;
+        color: white;
+        border: none;
+        padding: 10px 15px;
+        cursor: pointer;
+        border-radius: 5px;
+        transition: left 0.3s, background 0.3s;
+        font-size: 1.5rem;
+        z-index: 1000;
+      }
+      .sidebar.collapsed ~ .toggle-btn {
+        left: 95px;
+      }
+    </style>
+  </head>
+  <body>
+    <nav class="sidebar d-flex flex-column" id="sidebar">
+      <div>
+        <a class="nav-link toggle-nav" id="toggleSidebar">
+          <i class="bi bi-list"></i> <span>Menu</span>
+        </a>
+        <a class="nav-link" data-page="users">
+          <i class="bi bi-person"></i> <span>Users</span>
+        </a>
+        <a class="nav-link" data-page="stats" href="/superadmin/stats/">
+          <i class="bi bi-bar-chart"></i> <span>Stats</span>
+        </a>
+        <a class="nav-link" data-page="settings">
+          <i class="bi bi-gear"></i> <span>Settings</span>
+        </a>
+        <a class="nav-link" data-page="logs">
+          <i class="bi bi-file-earmark-text"></i> <span>Logs</span>
+        </a>
+      </div>
+      <a class="nav-link logout" data-page="logout">
+        <i class="bi bi-box-arrow-right"></i> <span>Logout</span>
+      </a>
+    </nav>
+
+    <main class="content" id="content">
+      <h2>Welcome</h2>
+      <p>Select an option from the menu.</p>
+    </main>
+  </body>
+  <script>
+    const content = document.getElementById("content");
+    const sidebar = document.getElementById("sidebar");
+    const toggleBtn = document.getElementById("toggleSidebar");
+    const navLinks = document.querySelectorAll(".nav-link[data-page]");
+
+    async function loadPage(page) {
+      console.log(`Fetching /superadmin/${page}...`);
+
+      let url = page === "logs" ? "/superadmin/logs/" : `/page/${page}`; // ✅ Fix for logs
+
+      try {
+        const response = await fetch(url);
+        if (response.ok) {
+          const contentHtml = await response.text();
+          document.getElementById("content").innerHTML = contentHtml;
+          window.history.pushState({}, "", `/superadmin/${page}`);
+
+          if (page === "settings") {
+            initializeSettingsScripts();
+          }
+          if (page === "users") {
+            initializeUsersScripts();
+          }
+          if (page === "logs") {
+            initializeLogsScripts(); // ✅ Call logs script ONLY when on logs
+          }
+          if (page === "stats") {
+            refreshStats();
+          }
+        } else {
+          console.error(`Error: ${url} not found`);
+          document.getElementById(
+            "content"
+          ).innerHTML = `<h2>Error</h2><p>Page not found.</p>`;
+        }
+      } catch (error) {
+        console.error("Failed to load page:", error);
+        document.getElementById(
+          "content"
+        ).innerHTML = `<h2>Error</h2><p>Failed to load content.</p>`;
+      }
+    }
+
+    async function refreshStats() {
+      console.log("Refreshing statistics...");
+      try {
+        const response = await fetch("/page/stats/");
+        if (response.ok) {
+          const dataHtml = await response.text();
+          document.getElementById("content").innerHTML = dataHtml;
+        } else {
+          console.error("Failed to refresh statistics.");
+        }
+      } catch (error) {
+        console.error("Error refreshing statistics:", error);
+      }
+    }
+
+    async function initializeUsersScripts() {
+  console.log("Initializing Users page scripts...");
+
+  // ✅ Fetch the latest users from Flask backend
+  try {
+    const response = await fetch("/superadmin/users");
+    if (!response.ok) {
+      console.error("Failed to fetch users data:", response.status);
+      return;
+    }
+
+    const usersHtml = await response.text();
+    document.getElementById("content").innerHTML = usersHtml; // ✅ Populate users dynamically
+    console.log("Users page loaded successfully!");
+  } catch (error) {
+    console.error("Error fetching users:", error);
+  }
+
+  // ✅ Reinitialize Bootstrap Modals after AJAX load
+  document.querySelectorAll(".modal").forEach((modal) => {
+    new bootstrap.Modal(modal, { backdrop: 'static' }); // Prevent accidental outside clicks
+  });
+
+  // ✅ Ensure user forms submit via AJAX
+  document.querySelectorAll("form").forEach((form) => {
+    form.addEventListener("submit", async function (event) {
+      event.preventDefault();
+      console.log(`Submitting form: ${this.action}`);
+
+      // Get the modal related to this form
+      const modalElement = this.closest('.modal');
+      const modalInstance = bootstrap.Modal.getInstance(modalElement);
+
+      try {
+        const response = await fetch(this.action, {
+          method: this.method,
+          body: new FormData(this),
+        });
+
+        if (response.ok) {
+          alert("Action completed successfully.");
+
+          // ✅ Close the modal
+          if (modalInstance) {
+            modalInstance.hide();
+          }
+
+          // ✅ Manually remove leftover backdrops
+          document.querySelectorAll('.modal-backdrop').forEach(backdrop => backdrop.remove());
+
+          // ✅ Reload users page dynamically
+          initializeUsersScripts();
+        } else {
+          alert("Failed to complete action.");
+        }
+      } catch (error) {
+        console.error("Error submitting form:", error);
+      }
+    });
+  });
+}
+
+
+
+    function initializeLogsScripts() {
+      console.log("Logs page loaded.");
+
+      // ✅ Only run if the user is actually on the logs page
+      if (!window.location.pathname.includes("/superadmin/logs")) {
+        console.log("Not on logs page, skipping auto-refresh.");
+        return; // ✅ Do nothing if not on logs page
+      }
+
+      // ✅ Ensure auto-refresh updates only logs, NOT the whole <main>
+      setInterval(async () => {
+        console.log("Refreshing logs...");
+        try {
+          const response = await fetch("/superadmin/logs/");
+          if (response.ok) {
+            const logsHtml = await response.text();
+            const logsContainer = document.querySelector("#content"); // ✅ Target only logs
+            if (
+              logsContainer &&
+              window.location.pathname.includes("/superadmin/logs")
+            ) {
+              logsContainer.innerHTML = logsHtml;
+            }
+          } else {
+            console.error("Failed to refresh logs.");
+          }
+        } catch (error) {
+          console.error("Error refreshing logs:", error);
+        }
+      }, 10000); // Refresh every 10 seconds
+    }
+
+    navLinks.forEach((link) => {
+      link.addEventListener("click", (event) => {
+        event.preventDefault();
+        const page = event.currentTarget.dataset.page;
+        if (page === "logout") {
+          window.location.href = "/logout"; // Redirect to logout page
+        } else {
+          loadPage(page);
+          navLinks.forEach((l) => l.classList.remove("active"));
+          event.currentTarget.classList.add("active");
+        }
+      });
+    });
+
+    toggleBtn.addEventListener("click", () => {
+      sidebar.classList.toggle("collapsed");
+    });
+
+
+
+    function initializeSettingsScripts() {
+    console.log("Initializing Settings page...");
+
+    const officeSelect = document.getElementById("officeSelect");
+    const sectionSelect = document.getElementById("sectionSelect");
+    const controls = document.getElementById("controls");
+
+    if (!officeSelect || !sectionSelect || !controls) {
+        console.error("Settings elements not found!");
+        return;
+    }
+
+    officeSelect.addEventListener("change", function () {
+        if (this.value) {
+            controls.style.display = "block";
+        } else {
+            controls.style.display = "none";
+        }
+    });
+
+    window.confirmAction = async function (action) {
+        const office = officeSelect.value;
+        const section = sectionSelect.value;
+
+        if (!office) {
+            alert("Please select an office first.");
+            return;
+        }
+
+        let payload = { office };
+        if (action === "set_priority_section" || action === "cancel_section_queues") {
+            payload.section = section;
+        }
+
+        if (!confirm(`Are you sure you want to perform '${action.replace('_', ' ')}'?`)) {
+            return;
+        }
+
+        try {
+            const response = await fetch(`/superadmin/settings/${action}`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(payload),
+            });
+
+            const result = await response.json();
+            if (response.ok) {
+                alert(result.message);
+            } else {
+                alert(`Error: ${result.error || "Unknown error"}`);
+            }
+        } catch (error) {
+            console.error("Failed to perform action:", error);
+            alert("Action failed. Check the console for details.");
+        }
+    };
+}
+
+  </script>
+</html>

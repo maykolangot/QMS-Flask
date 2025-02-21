@@ -1,0 +1,272 @@
+body {
+    font-family: 'Arial', sans-serif;
+    background-color: #f8f9fa;
+    padding: 30px;
+    position: relative;
+}
+body::before {
+    content: "";
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: url('/static/images/au-southbg.jpg') no-repeat center center/cover;
+    filter: blur(7px) brightness(50%);
+    z-index: -1;
+}
+
+.logo-container {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.logo-container img {
+    width: 150px;
+    height: auto;
+}
+
+h4 {
+    text-align: center;
+    color: #ffffff;
+    font-weight: bold;
+    margin-bottom: 20px;
+}
+
+h2 {
+    font-weight: bold;
+
+}
+
+
+
+#buttons-section .d-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); /* Adjusted minmax size */
+    gap: 20px; /* Increased gap for better spacing */
+    justify-content: center;
+    align-items: center;
+}
+
+.huge-button {
+    font-size: 1.8rem; /* Increased font size */
+    padding: 40px;
+    width: 250px; /* Increased size */
+    height: 200px; /* Keep it square */
+    border-radius: 15px;
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
+    transition: 0.3s ease-in-out;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+}
+
+.huge-button i {
+    font-size: 50px; /* Increased icon size */
+    margin-bottom: 15px;
+}
+
+.huge-button:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+}
+
+
+
+/* Cashier - Blue */
+.btn-cashier {
+    background-color: #007bff; /* Blue */
+    color: white;
+    border: none;
+}
+.btn-cashier:hover {
+    background-color: #0056b3; /* Darker Blue */
+}
+
+/* Marketing - Green */
+.btn-marketing {
+    background-color: #28a745; /* Green */
+    color: white;
+    border: none;
+}
+.btn-marketing:hover {
+    background-color: #1e7e34; /* Darker Green */
+}
+
+/* Business Office - Orange */
+.btn-business {
+    background-color: #fd7e14; /* Orange */
+    color: white;
+    border: none;
+}
+.btn-business:hover {
+    background-color: #e46400; /* Darker Orange */
+}
+
+/* CSDL - Purple */
+.btn-csdl {
+    background-color: #6f42c1; /* Purple */
+    color: white;
+    border: none;
+}
+.btn-csdl:hover {
+    background-color: #512da8; /* Darker Purple */
+}
+
+/* Registrar - Red */
+.btn-registrar {
+    background-color: #dc3545; /* Red */
+    color: white;
+    border: none;
+}
+.btn-registrar:hover {
+    background-color: #b02a37; /* Darker Red */
+}
+
+
+
+.options-container1 {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 15px;
+    text-align: center;
+    margin-bottom: 20px;
+
+}
+.options-container2 {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 15px;
+    text-align: center;
+}
+/* Button Styling */
+.option {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 200px;
+    border-radius: 12px;
+    color: #fff;
+    font-weight: bold;
+    font-size: 1.4rem;
+    cursor: pointer;
+    transition: all 0.3s ease-in-out;
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.15);
+    border: none;
+}
+
+/* Icon Styling */
+.option i {
+    font-size: 40px;
+    margin-bottom: 5px;
+}
+
+/* Hover Effects */
+.option:hover {
+    transform: translateY(-5px);
+}
+
+
+
+
+
+.container {
+    margin-top: 50px;
+    max-width: 700px;
+    background: linear-gradient(135deg, #cfe2ff, #ffffff); /* Blue to Yellow gradient */
+    padding: 30px;
+    border-radius: 15px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+    position: relative;
+    z-index: 1;
+    text-align: center;
+}
+.container.expanded {
+    max-width: 900px; /* Kapag active na */
+}
+
+#buttons-section {
+    background: none;
+
+
+}
+
+
+
+.btn-option {
+    font-size: 20px;
+    padding: 15px;
+    width: 100%;
+    text-align: left;
+    display: flex;
+    align-items: center;
+}
+.btn-option i {
+    margin-right: 15px;
+    font-size: 24px;
+}
+
+
+
+.checkbox-wrapper-31:hover .check {
+    stroke-dashoffset: 0;
+  }
+
+  .checkbox-wrapper-31 {
+    position: relative;
+    display: inline-block;
+    width: 40px;
+    height: 40px;
+  }
+  .checkbox-wrapper-31 .background {
+    fill: #ccc;
+    transition: ease all 0.6s;
+    -webkit-transition: ease all 0.6s;
+  }
+  .checkbox-wrapper-31 .stroke {
+    fill: none;
+    stroke: #fff;
+    stroke-miterlimit: 10;
+    stroke-width: 2px;
+    stroke-dashoffset: 100;
+    stroke-dasharray: 100;
+    transition: ease all 0.6s;
+    -webkit-transition: ease all 0.6s;
+  }
+  .checkbox-wrapper-31 .check {
+    fill: none;
+    stroke: #fff;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    stroke-width: 2px;
+    stroke-dashoffset: 22;
+    stroke-dasharray: 22;
+    transition: ease all 0.6s;
+    -webkit-transition: ease all 0.6s;
+  }
+  .checkbox-wrapper-31 input[type=checkbox] {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    left: 0;
+    top: 0;
+    margin: 0;
+    opacity: 0;
+    -appearance: none;
+    -webkit-appearance: none;
+  }
+  .checkbox-wrapper-31 input[type=checkbox]:hover {
+    cursor: pointer;
+  }
+  .checkbox-wrapper-31 input[type=checkbox]:checked + svg .background {
+    fill: #6cbe45;
+  }
+  .checkbox-wrapper-31 input[type=checkbox]:checked + svg .stroke {
+    stroke-dashoffset: 0;
+  }
+  .checkbox-wrapper-31 input[type=checkbox]:checked + svg .check {
+    stroke-dashoffset: 0;
+  }

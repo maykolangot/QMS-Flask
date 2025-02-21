@@ -1,0 +1,142 @@
+<h2>Super Admin Dashboard - Users</h2>
+
+<!-- Add User Button -->
+<button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#addUserModal">
+    Add User
+</button>
+
+<!-- Add User Modal -->
+<div class="modal fade" id="addUserModal" tabindex="-1" aria-labelledby="addUserModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addUserModalLabel">Add User</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form action="{{ url_for('users.create_user') }}" method="POST">
+                <div class="modal-body">
+                    <label for="name">Name</label>
+                    <input type="text" name="name" class="form-control" required>
+
+                    <label for="role">Role</label>
+                    <select name="role" class="form-control" required>
+                        {% for role in roles %}
+                            <option value="{{ role }}">{{ role.capitalize() }}</option>
+                        {% endfor %}
+                    </select>
+
+                    <label for="username">Username</label>
+                    <input type="text" name="username" class="form-control" required>
+
+                    <label for="password">Password</label>
+                    <input type="password" name="password" class="form-control" required>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary">Save User</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Users Table -->
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Role</th>
+            <th>Username</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for user in users %}
+        <tr>
+            <td>{{ user.name }}</td>
+            <td>{{ user.role }}</td>
+            <td>{{ user.username }}</td>
+            <td>
+                <!-- Edit Button -->
+                <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#editUserModal{{ user.username }}">
+                    Edit
+                </button>
+
+                <!-- Edit User Modal -->
+                <div class="modal fade" id="editUserModal{{ user.username }}" tabindex="-1" aria-labelledby="editUserModalLabel" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title">Edit User</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <form action="{{ url_for('users.update_user', username=user.username) }}" method="POST">
+                                <div class="modal-body">
+                                    <label for="name">Name</label>
+                                    <input type="text" name="name" class="form-control" value="{{ user.name }}" required>
+
+                                    <label for="role">Role</label>
+                                    <select name="role" class="form-control" required>
+                                        {% for role in roles %}
+                                            <option value="{{ role }}" {% if role == user.role %}selected{% endif %}>{{ role.capitalize() }}</option>
+                                        {% endfor %}
+                                    </select>
+
+                                    <label for="password">New Password (leave blank to keep current)</label>
+                                    <input type="password" name="password" class="form-control">
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                    <button type="submit" class="btn btn-primary">Update User</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Delete Form -->
+                <form action="{{ url_for('users.delete_user', username=user.username) }}" method="POST" style="display:inline;">
+                    <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure?');">Delete</button>
+                </form>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<script>
+     window.location.href = "/superadmin";
+    document.addEventListener("DOMContentLoaded", function() {
+    console.log("Users page loaded");
+
+    // Reinitialize form submission to prevent page refresh
+    document.querySelectorAll("form").forEach(form => {
+        form.addEventListener("submit", function(event) {
+            event.preventDefault();
+
+            // Get the modal related to this form
+            const modalElement = this.closest('.modal');
+            const modalInstance = bootstrap.Modal.getInstance(modalElement);
+
+            fetch(this.action, {
+                method: this.method,
+                body: new FormData(this)
+            })
+            .then(response => response.text())
+            .then(data => {
+                alert("Action completed successfully.");
+
+                // Close the modal if it's open
+                if (modalInstance) {
+                    modalInstance.hide();
+                }
+
+                // Reload the page
+                location.reload();
+            })
+            .catch(error => console.error("Error:", error));
+        });
+    });
+});
+
+</script>

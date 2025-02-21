@@ -1,0 +1,35 @@
+
+    <div class="container d-flex justify-content-center align-items-center min-vh-100">
+        <div class="card text-dark bg-light w-50 shadow-lg rounded">
+            <div class="card-header bg-primary text-white text-center">
+                <h2>Super Admin Dashboard - Settings</h2>
+            </div>
+            <div class="card-body p-4">
+                <div class="mb-3">
+                    <label for="officeSelect" class="form-label fw-bold">Select Office:</label>
+                    <select id="officeSelect" class="form-select border-primary">
+                        <option value="">-- Select --</option>
+                        <option value="CashierQueueRecords">Cashier</option>
+                        <option value="MarketingQueueRecords">Marketing</option>
+                        <option value="BusinessOfficeQueueRecords">Business Office</option>
+                        <option value="CSDLQueueRecords">CSDL</option>
+                        <option value="RegistrarQueueRecords">Registrar</option>
+                    </select>
+                </div>
+                <div id="controls" class="mt-4" style="display: none;">
+                    <h3 class="text-center text-primary">Actions</h3>
+                    <button class="btn btn-danger btn-custom w-100 mb-3" onclick="confirmAction('cancel_queues')">Cancel All Queues</button>
+                    <div class="mb-3">
+                        <label for="sectionSelect" class="form-label fw-bold">Select Section:</label>
+                        <select id="sectionSelect" class="form-select border-primary">
+                            <option value="MAIN">MAIN</option>
+                            <option value="SOUTH">SOUTH</option>
+                        </select>
+                    </div>
+                    <button class="btn btn-warning btn-custom w-100 mb-2" onclick="confirmAction('set_priority_section')">Set Priority Section</button>
+                    <button class="btn btn-secondary btn-custom w-100" onclick="confirmAction('cancel_section_queues')">Cancel Section Queues</button>
+                </div>
+            </div>
+        </div>
+    </div>
+

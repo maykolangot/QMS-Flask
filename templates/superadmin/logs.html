@@ -1,0 +1,11 @@
+<h2>System Logs</h2>
+<div class="logs-container" style="max-height: 500px; overflow-y: auto; background: #f8f9fa; padding: 10px; border-radius: 5px;">
+    {% if logs %}
+        <pre>{% for log in logs %}{{ log }}{% endfor %}</pre>
+    {% else %}
+        <p>No logs available.</p>
+    {% endif %}
+</div>
+<script>
+    window.location.href = "/superadmin";
+</script>

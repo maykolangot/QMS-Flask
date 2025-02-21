@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{{ department_name }} Queue</title>
+    <style>
+                body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+
+        h1 {
+            background-color: #4CAF50;
+            color: white;
+            margin: 0;
+            padding: 20px;
+            text-align: center;
+            font-size: 30px; /* Slightly larger */
+        }
+
+        h2 {
+            color: #333;
+            margin-top: 40px;
+            text-align: center;
+        }
+
+        /* Larger font for "Currently In Process" */
+        h2:first-of-type {
+            font-size: 36px;
+            font-weight: bold;
+        }
+
+        /* Slightly smaller font for "On Queue" */
+        h2:last-of-type {
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        /* In Process Styling */
+        .in-process-container {
+            display: flex;
+            justify-content: center;
+            width: 90%;
+            margin: 20px auto;
+            padding: 15px;
+            background-color: #d4edda;
+            border: 3px solid #28a745;
+            border-radius: 12px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        .in-process-item {
+            flex: 1;
+            margin: 0 10px;
+            text-align: center;
+            font-size: 50px; /* Bigger font for numbers */
+            font-weight: bold;
+            color: #155724;
+            background-color: #c3e6cb;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        /* On Queue Styling */
+        .on-queue-list-container {
+            display: flex;
+            justify-content: space-between;
+            width: 90%;
+            margin: 20px auto;
+        }
+
+        .on-queue-list {
+            list-style-type: none;
+            padding: 0;
+            width: 30%;
+        }
+
+        .on-queue-item {
+            font-size: 24px; /* Slightly smaller */
+            font-weight: bold;
+            color: #333;
+            background-color: #f4f4f4;
+            padding: 12px;
+            text-align: center;
+            margin-bottom: 10px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        p {
+            text-align: center;
+            color: #777;
+        }
+
+    </style>
+</head>
+<body>
+    <h1>{{ department_name }} Queue</h1>
+
+    <h2>Currently In Process</h2>
+    {% if queues['In Process'] %}
+        <div class="in-process-container">
+            {% for queue in queues['In Process'] %}
+                <div class="in-process-item">
+                    {{ queue['queueNumber'] }}
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <p>No queues currently in process.</p>
+    {% endif %}
+
+    <h2>On Queue</h2>
+    {% if queues['On Queue'] %}
+        <div class="on-queue-list-container">
+            {% set on_queue = queues['On Queue'][:21] %} <!-- Limit to 21 items -->
+
+            <!-- First Column -->
+            <ul class="on-queue-list">
+                {% for queue in on_queue[:7] %}
+                    <li class="on-queue-item">
+                        {{ queue['queueNumber'] }}
+                    </li>
+                {% endfor %}
+            </ul>
+
+            <!-- Second Column -->
+            {% if on_queue | length > 7 %}
+                <ul class="on-queue-list">
+                    {% for queue in on_queue[7:14] %}
+                        <li class="on-queue-item">
+                            {{ queue['queueNumber'] }}
+                        </li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+
+            <!-- Third Column -->
+            {% if on_queue | length > 14 %}
+                <ul class="on-queue-list">
+                    {% for queue in on_queue[14:21] %}
+                        <li class="on-queue-item">
+                            {{ queue['queueNumber'] }}
+                        </li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+        </div>
+    {% else %}
+        <p>No queues currently on queue.</p>
+    {% endif %}
+</body>
+<script>
+        setInterval(function() {
+        window.location.reload();
+    }, 1000);
+</script>
+
+</html>
