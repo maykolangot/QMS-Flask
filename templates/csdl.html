@@ -11,14 +11,24 @@
 <body class="bg-light">
 
    <div class="navbar">
-        <h1>CSDL Console</h1>
-        <img src="/static/images/au-logo.png" alt="Logo">
+    <h1>CSDL Office Console</h1>
+    <div class="navbar-right">
+        <h3>Welcome {{ session['username'] }}</h3>
+        <div class="dropdown">
+            <img src="/static/images/au-logo.png" alt="Profile" class="profile-img" onclick="toggleDropdown()">
+            <div class="dropdown-menu" id="profileDropdown">
+                <a href="{{ url_for('edit_profile') }}" class="dropdown-item">Edit Profile</a>
+                <form action="{{ url_for('logout') }}" method="POST">
+                    <button type="submit" class="dropdown-item logout-btn">Logout</button>
+                </form>
+            </div>
+        </div>
     </div>
+</div>
+
 
     <div class="container py-3">
-        <h2 style="text-align:center;">
-            Welcome {{ session['username'] }}
-        </h2>
+
 
         <div class="alert alert-info text-center" id="in_process_queue">
             <h3 id="in_process_message">In Process: No queue is currently in process.</h3>
@@ -27,23 +37,17 @@
         <div class="d-flex justify-content-center gap-3 mb-4">
             <button class="btn btn-success" onclick="performAction('next')">Next</button>
             <button class="btn btn-warning" onclick="performAction('hold')">Hold</button>
-            <button class="btn btn-info" onclick="performAction('pauseQueue')">Complete Transaction then Pause Queue</button>
+            <button class="btn btn-info" onclick="performAction('pauseQueue')">Pause Queue</button>
 
         </div>
 
         <div class="card p-4 shadow-sm">
             <h3 class="text-center">Queue Status</h3>
             <p>On Queue: <span class="fw-bold text-primary" id="on_queue_count">{{ on_queue_count }}</span></p>
-            <p>On Hold: <span class="fw-bold text-warning" id="on_hold_count">{{ on_hold_count }}</span></p>
             <p>Cut Off/Cancelled: <span class="fw-bold text-danger" id="cut_off_count">{{ cut_off_count }}</span></p>
         </div>
 
-        <div class="text-center mt-4">
-            <a href="{{ url_for('edit_profile') }}" class="btn btn-primary">Edit Profile</a>
-            <form action="{{ url_for('logout') }}" method="POST" class="d-inline">
-                <button type="submit" class="btn btn-danger">Logout</button>
-            </form>
-        </div>
+
     </div>
 
       <!-- Modal for Messages -->
@@ -77,33 +81,45 @@
         setInterval(updateQueueStatus, 5000); // Refresh every 5 seconds
     });
 
-function performAction(action) {
-    let endpoint;
+    function performAction(action) {
+      let endpoint;
 
-    // Determine endpoint based on action
-    if (action === 'next') {
+      // Determine endpoint based on action
+      if (action === "next") {
         endpoint = "/csdl_api/get_next_queue";
-    } else if (action === 'hold') {
+      } else if (action === "hold") {
         endpoint = "/csdl_api/hold_queue";
-    } else if (action === 'pauseQueue') {
-        endpoint = "/csdl_api/pause_queue";  // New Pause Queue Endpoint
-    } else {
+      } else if (action === "pauseQueue") {
+        endpoint = "/csdl_api/pause_queue"; // New Pause Queue Endpoint
+      } else {
         console.error("Invalid action:", action);
         return;
+      }
+
+      // Send POST request to the selected endpoint
+      fetch(endpoint, { method: "POST", credentials: "include" })
+        .then((response) => response.json())
+        .then((data) => {
+          if (data.queueNumber && action === "next") {
+            alert(`Next Queue Reserved: ${data.queueNumber}`);
+            announceQueueNumber(data.queueNumber);
+          } else {
+            alert(data.message);
+          }
+        })
+        .catch((error) => console.error("Error:", error));
     }
 
-    // Send POST request to the selected endpoint
-    fetch(endpoint, { method: "POST", credentials: "include" })
-        .then(response => response.json())
-        .then(data => {
-            // Update modal message with the response
-            document.getElementById("modalMessage").innerHTML = `<p>${data.message}</p>`;
-            new bootstrap.Modal(document.getElementById("messageModal")).show();
-
-            updateQueueStatus(); // Refresh queue status
-        })
-        .catch(error => console.error("Error:", error));
-}
+    function announceQueueNumber(queueNumber) {
+      const msg = new SpeechSynthesisUtterance(
+        `Now serving queue number ${queueNumber}`
+      );
+      msg.lang = "en-US";
+      msg.volume = 1;
+      msg.rate = 1;
+      msg.pitch = 1;
+      window.speechSynthesis.speak(msg);
+    }
 
 
     document.addEventListener("DOMContentLoaded", () => {
@@ -146,6 +162,21 @@ function performAction(action) {
       setTimeout(() => flashMessage.remove(), 500); // Remove from DOM after fading out
     }
   }, 5000);
+
+      function toggleDropdown() {
+    document.getElementById("profileDropdown").classList.toggle("show");
+}
+
+// Close dropdown if clicked outside
+window.onclick = function(event) {
+    if (!event.target.matches('.profile-img')) {
+        let dropdown = document.getElementById("profileDropdown");
+        if (dropdown.classList.contains("show")) {
+            dropdown.classList.remove("show");
+        }
+    }
+};
+
 </script>
 </html>
 
