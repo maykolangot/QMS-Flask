@@ -1,26 +1,103 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
     <title>Verify OTP</title>
     <style>
         body {
-            font-family: Arial, sans-serif;
+            font-family: 'Arial', sans-serif;
+            background-color: #f8f9fa;
+            position: relative;
+            min-height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
-            height: 100vh;
-            background-color: #f4f4f4;
-            margin: 0;
         }
-        .container {
-            background: #fff;
-            padding: 20px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            border-radius: 8px;
+
+        body::before {
+            content: "";
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('/static/images/au-southbg.jpg') no-repeat center center/cover;
+            filter: blur(7px) brightness(50%);
+            z-index: -1;
+        }
+
+        body::after {
+            content: "";
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.2);
+            z-index: -1;
+        }
+
+        .login-container {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
             text-align: center;
+            max-width: 400px;
+            width: 100%;
+            position: relative;
         }
+
+        .logo-container {
+            position: absolute;
+            top: -50px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: white;
+            padding: 10px;
+            border-radius: 50%;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        .logo-container img {
+            max-width: 80px;
+            height: auto;
+            border-radius: 50%;
+        }
+
+
+        .form-control {
+            border-radius: 8px;
+        }
+
+        .btn-primary {
+            background-color: #003366;
+            border: none;
+            padding: 10px;
+            font-size: 1.1rem;
+            border-radius: 8px;
+            transition: all 0.3s ease-in-out;
+        }
+
+        .btn-primary:hover {
+            background-color: #0056b3;
+            transform: translateY(-2px);
+        }
+
+
+
         h2 {
             margin-bottom: 15px;
+            color: #003366;
+            font-weight: bold;
+            margin-top: 40px;
+
+
         }
         label {
             font-weight: bold;
@@ -31,7 +108,7 @@
             width: 100%;
             padding: 10px;
             margin-bottom: 15px;
-            border: 1px solid #ccc;
+            border: 1px solid #0B409C;
             border-radius: 5px;
             font-size: 16px;
             text-align: center;
@@ -49,10 +126,15 @@
         button:hover {
             background: #0056b3;
         }
+
+
     </style>
 </head>
 <body>
-    <div class="container">
+    <div class="login-container">
+        <div class="logo-container">
+            <img src="/static/images/au-logo.png" alt="AU Logo">
+        </div>
         <h2>Enter OTP</h2>
         <form method="post">
             <label for="otp">OTP:</label>
